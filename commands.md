@@ -19,6 +19,9 @@ Run `openssl rand -base64 10` to generate a random JWT secret for the .env
 
 npx sequelize init
 
+npx sequelize model:generate --name ModelName --attributes attributeName:Datatype,
+npx sequelize model:generate --name Hero --attributes ownerId:integer,name:string,hitPoints:float,
+
 any `sequelize db:` commands need to be prefixed with `dotenv`
 
 npx dotenv sequelize db:migrate
