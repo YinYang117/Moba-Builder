@@ -5,6 +5,7 @@ Table users {
   id integer [primary key]
   username varchar
   email varchar
+  hashed_password string.binary
   created_at timestamp
   updated_at timestamp
 }
