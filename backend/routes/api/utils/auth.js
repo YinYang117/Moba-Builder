@@ -36,6 +36,7 @@ const setTokenCookie = (res, user) => {
     const { token } = req.cookies;
     req.user = null;
 
+    // verify = https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
     return jwt.verify(token, secret, null, async (err, jwtPayload) => {
       if (err) return next();
 
@@ -56,13 +57,12 @@ const setTokenCookie = (res, user) => {
     });
   };
 
-  // If there is no current user, return an error
+  // Authentification = If no current user, return error
 const requireAuth = function (req, _res, next) {
     if (req.user) return next();
 
     const err = new Error('Authentication required');
-    err.title = 'Authentication required';
-    err.message = 'Authentication required' ;
+    err.message = 'Authentication required';
     err.status = 401;
     return next(err);
   }
