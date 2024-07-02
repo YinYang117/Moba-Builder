@@ -9,5 +9,9 @@ router.get("/csrf/restore", (req, res) => {
     });
 });
 
+const express = require('express');
+const heroRouter = require('./api/hero');
+
+router.use('/api', apiRouter)
 
 module.exports = router;
