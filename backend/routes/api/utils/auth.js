@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
-
 const { secret, expiresIn } = jwtConfig;
+const { User } = require('../db/models');
 
 // create a jwt token and set it as a cookie in res after log-in or sign-up
 const setTokenCookie = (res, user) => {
