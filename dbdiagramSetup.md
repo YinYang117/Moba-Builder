@@ -16,7 +16,7 @@ Table heroes {
   name varchar
   resource_name enum
   resource_amount integer
-  hitpoints integer
+  hit_points integer
   physical_armor integer
   magical_resistance integer
   move_speed float
