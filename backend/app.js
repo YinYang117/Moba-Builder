@@ -38,9 +38,11 @@ app.use(csurf({
 
 
 // Routes
-
 app.use(routes);
 
+app.get('/', (req, res, next) => {
+    res.json("Welcome to Moba-Builder!")
+})
 
 // Catch unhandled requests and forward to error handler
 app.use((_req, _res, next) => {
