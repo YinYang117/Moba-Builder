@@ -5,28 +5,35 @@ const { check } = require('express-validator')
 const { handleValidationErrors } = require('../utils/validation')
 const { setTokenCookie, restoreUser } = require('../utils/auth');
 const { User } = require('../../db/models');
+const { Op } = require('sequelize');
 
 const validateSignup = [
     check('email')
         .exists({ checkFalsy: true })
         .isEmail()
         .withMessage('Invalid email'),
+    check('email')
+        .isLength({ min: 5 })
+        .withMessage('Email must be at least 5 characters'),
+    check('email')
+        .isLength({ max: 255 })
+        .withMessage('Email must be 255 characters or less'),
     check('username')
         .exists({ checkFalsy: true })
         .withMessage('Username is required'),
     check('username')
         .not()
         .isEmail()
-        .withMessage('Username cannot be an email.'),
+        .withMessage('Username cannot be an email'),
     check('username')
         .isLength({ min: 3 })
-        .withMessage('Username must be at least 3 characters.'),
+        .withMessage('Username must be at least 3 characters'),
     check('username')
         .isLength({ max: 50 })
-        .withMessage('Username must be 50 characters or less.'),
+        .withMessage('Username must be 50 characters or less'),
     check('password')
         .exists({ checkFalsy: true })
-        .withMessage('Password is required.'),
+        .withMessage('Password is required'),
     handleValidationErrors
 ];
 
@@ -39,7 +46,7 @@ router.post('/', validateSignup, async (req, res) => {
     const isExistingUser = await User.findOne({
         where: {
             [Op.or]: [{ email: email }, { username: username }],
-          },
+        },
     })
 
     if (isExistingUser) {
@@ -52,7 +59,7 @@ router.post('/', validateSignup, async (req, res) => {
         res.json(errObj);
     }
 
-    const newUser = User.create({
+    const newUser = await User.create({
         username, email, hashedPassword
     })
 
@@ -62,10 +69,14 @@ router.post('/', validateSignup, async (req, res) => {
         email: newUser.email
     }
 
-    console.log("!*?*!*!*?*!*!*?*!*", newUser)
-
     setTokenCookie(res, safeUser)
 
+    res.json(safeUser)
 })
+
+/*
+    No functionality to delete or edit users yet.
+    Getting a user will usually fall into a session request and the session router.
+*/
 
 module.exports = router;
