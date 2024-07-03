@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { check } = require('express-validator')
-const { handleValidationErrors } = require('../../utils/validation')
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { handleValidationErrors } = require('../utils/validation')
+const { setTokenCookie, restoreUser } = require('../utils/auth');
 const { User } = require('../../db/models');
 
 const validateSignup = [
@@ -56,8 +56,16 @@ router.post('/', validateSignup, async (req, res) => {
         username, email, hashedPassword
     })
 
+    const safeUser = {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email
+    }
+
     console.log("!*?*!*!*?*!*!*?*!*", newUser)
 
-    setTokenCookie()
+    setTokenCookie(res, safeUser)
 
 })
+
+module.exports = router;

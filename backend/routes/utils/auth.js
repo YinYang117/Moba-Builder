@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const { jwtConfig } = require('../config');
+const { jwtConfig } = require('../../config');
 const { secret, expiresIn } = jwtConfig;
-const { User } = require('../db/models');
+const { User } = require('../../db/models');
 
 // create a jwt token and set it as a cookie in res after log-in or sign-up
 const setTokenCookie = (res, user) => {
@@ -10,62 +10,62 @@ const setTokenCookie = (res, user) => {
     email: user.email,
     username: user.username,
   };
-  
+
   // Create the token.
-    const token = jwt.sign(
-      { data: safeUser }, // payload, visible
-      secret,             // env, not public
-      { expiresIn: parseInt(expiresIn) }
-    );
+  const token = jwt.sign(
+    { data: safeUser }, // payload, visible
+    secret,             // env, not public
+    { expiresIn: parseInt(expiresIn) }
+  );
 
-    const isProduction = process.env.NODE_ENV === "production";
+  const isProduction = process.env.NODE_ENV === "production";
 
-    // Set the cookie under token key
-    res.cookie('token', token, {
-      maxAge: expiresIn * 1000, // maxAge in milliseconds
-      httpOnly: true, // not accessible via JS, only HTTP requests. Mitigates risk of cross-site scripting (XSS)
-      secure: isProduction,
-      sameSite: isProduction && "Lax" // For cross-site request forgery (CSRF). Lax setting allows the cookie to be sent with same-site requests and top-level navigation GET requests, but not with third-party requests.
-    });
+  // Set the cookie under token key
+  res.cookie('token', token, {
+    maxAge: expiresIn * 1000, // maxAge in milliseconds
+    httpOnly: true, // not accessible via JS, only HTTP requests. Mitigates risk of cross-site scripting (XSS)
+    secure: isProduction,
+    sameSite: isProduction && "Lax" // For cross-site request forgery (CSRF). Lax setting allows the cookie to be sent with same-site requests and top-level navigation GET requests, but not with third-party requests.
+  });
 
-    return token;
-  };
+  return token;
+};
 
-  const restoreUser = (req, res, next) => {
-    // jwt token cookie
-    const { token } = req.cookies;
-    req.user = null;
+const restoreUser = (req, res, next) => {
+  // jwt token cookie
+  const { token } = req.cookies;
+  req.user = null;
 
-    // verify = https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
-    return jwt.verify(token, secret, null, async (err, jwtPayload) => {
-      if (err) return next();
+  // verify = https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
+  return jwt.verify(token, secret, null, async (err, jwtPayload) => {
+    if (err) return next();
 
-      try {
-        const { id } = jwtPayload.data;
-        // sets user key on req obj for easy access later
-        req.user = await User.findByPk(id, {
-          attributes: { include: ['email', 'createdAt', 'updatedAt'] }
-        });
-      } catch (e) {
-        res.clearCookie('token');
-        return next(); // don't need return val, just exit func
-      }
+    try {
+      const { id } = jwtPayload.data;
+      // sets user key on req obj for easy access later
+      req.user = await User.findByPk(id, {
+        attributes: { include: ['email', 'createdAt', 'updatedAt'] }
+      });
+    } catch (e) {
+      res.clearCookie('token');
+      return next(); // don't need return val, just exit func
+    }
 
-      if (!req.user) res.clearCookie('token');
+    if (!req.user) res.clearCookie('token');
 
-      return next();
-    });
-  };
+    return next();
+  });
+};
 
-  // Authentification = If no current user, return error
+// Authentification = If no current user, return error
 const requireAuth = function (req, _res, next) {
-    if (req.user) return next();
+  if (req.user) return next();
 
-    const err = new Error('Authentication required');
-    err.message = 'Authentication required';
-    err.status = 401;
-    return next(err);
-  }
+  const err = new Error('Authentication required');
+  err.message = 'Authentication required';
+  err.status = 401;
+  return next(err);
+}
 
 
 module.exports = { setTokenCookie, restoreUser, requireAuth };

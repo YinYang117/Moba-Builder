@@ -22,7 +22,7 @@ module.exports = {
         allowNull: true,
       },
       resourceName: {
-        type: Sequelize.ENUM,
+        type: Sequelize.ENUM("Energy", "Mana", "Rage", "Focus"),
         allowNull: true,
       },
       resourceAmount: {
