@@ -9,15 +9,14 @@ const { Op } = require('sequelize');
 
 const validateSignup = [
     check('email')
-        .exists({ checkFalsy: true })
-        .isEmail()
-        .withMessage('Invalid email'),
-    check('email')
         .isLength({ min: 5 })
         .withMessage('Email must be at least 5 characters'),
     check('email')
         .isLength({ max: 255 })
         .withMessage('Email must be 255 characters or less'),
+    check('email')
+        .isEmail()
+        .withMessage('Invalid email'),
     check('username')
         .exists({ checkFalsy: true })
         .withMessage('Username is required'),

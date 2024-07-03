@@ -32,3 +32,8 @@ npx dotenv sequelize db:seed
 npx dotenv sequelize db:seed:all
 npx dotenv sequelize db:seed:undo
 npx dotenv sequelize db:seed:undo:all
+
+
+Backend Validations:
+https://express-validator.github.io/docs/api
+https://express-validator.github.io/docs/api/validation-chain

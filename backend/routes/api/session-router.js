@@ -10,7 +10,6 @@ const { setTokenCookie } = require('../utils/auth');
 const validateLogin = [
     // Allow a user to provide email or username for login
     check('credential')
-        .exists({ checkFalsy: true })
         .notEmpty()
         .withMessage('Email or username is required'),
     check('password')
