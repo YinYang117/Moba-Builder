@@ -75,7 +75,6 @@ router.post('/', validateSignup, async (req, res) => {
 
 /*
     No functionality to delete or edit users yet.
-    Getting a user will usually fall into a session request and the session router.
 */
 
 module.exports = router;
