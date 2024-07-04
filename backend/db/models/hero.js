@@ -10,14 +10,40 @@ module.exports = (sequelize, DataTypes) => {
   }
   Hero.init({
     ownerId: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    resourceName: DataTypes.STRING,
-    resourceAmount: DataTypes.INTEGER,
-    hitPoints: DataTypes.INTEGER,
-    physicalArmor: DataTypes.INTEGER,
-    magicalResistance: DataTypes.INTEGER,
-    moveSpeed: DataTypes.FLOAT
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: { len: [1, 50] }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      len: [1, 1000]
+    },
+    resourceName: {
+      type: DataTypes.ENUM("Energy", "Mana", "Rage", "Focus"),
+      allowNull: true
+    },
+    resourceAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    hitPoints: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    physicalArmor: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    magicalResistance: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    moveSpeed: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Hero',
