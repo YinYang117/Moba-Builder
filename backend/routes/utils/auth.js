@@ -23,7 +23,7 @@ const setTokenCookie = (res, user) => {
   // Set the cookie under token key
   res.cookie('token', token, {
     maxAge: expiresIn * 1000, // maxAge in milliseconds
-    httpOnly: true, // not accessible via JS, only HTTP requests. Mitigates risk of cross-site scripting (XSS)
+    httpOnly: true, // not accessible with JS. Mitigates cross-site scripting (XSS)
     secure: isProduction,
     sameSite: isProduction && "Lax" // For cross-site request forgery (CSRF). Lax setting allows the cookie to be sent with same-site requests and top-level navigation GET requests, but not with third-party requests.
   });
